@@ -1,0 +1,25 @@
+### Test root endpoint
+GET http://localhost:7071/api/hotels/
+
+###
+
+### Create hotel
+POST http://localhost:7071/api/hotels/hotel
+Content-Type: application/json
+
+[
+  {"id": 8, "name": "Hotel 4", "address": "Address 4"},
+  {"id": 9, "name": "Hotel 5", "address": "Address 5"}
+]
+
+###
+
+### Get all hotels
+GET http://localhost:7071/api/hotels/hotel
+
+###
+
+### Get hotel by id
+GET http://localhost:7071/api/hotels/hotel/1
+
+###
