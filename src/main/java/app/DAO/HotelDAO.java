@@ -94,29 +94,43 @@ public class HotelDAO implements IDAO{
     }
 
     @Override
-    public Hotel removeRoom(Hotel hotel, Room room) {
+    public boolean removeRoom(int roomId) {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
 
-            Hotel managedHotel = em.find(Hotel.class, hotel.getId());
-            Room managedRoom = em.find(Room.class, room.getId());
-
-            if (managedHotel != null && managedRoom != null) {
-                managedHotel.getRooms().remove(managedRoom);
-                em.remove(managedRoom);
+            Room room = em.find(Room.class, roomId);
+            if (room != null) {
+                Hotel hotel = room.getHotel(); // hent hotel
+                if (hotel != null) {
+                    hotel.getRooms().remove(room); // fjern fra hotel
+                }
+                em.remove(room); // slet room
+                em.getTransaction().commit();
+                return true;
+            } else {
+                em.getTransaction().rollback();
+                return false;
             }
-
-            em.getTransaction().commit();
-            return managedHotel;
         }
     }
 
     @Override
-    public List<Room> getRoomsForHotel(Hotel hotel) {
+    public List<Room> getRoomsForHotel(int hotelId) {
         try (EntityManager em = emf.createEntityManager()) {
-            Hotel managedHotel = em.find(Hotel.class, hotel.getId());
-            return managedHotel.getRooms();
+            Hotel hotel1 = em.find(Hotel.class, hotelId);
+            if (hotel1 != null) {
+                return hotel1.getRooms();
+            } else {
+                return List.of(); // returner tom liste hvis hotel ikke findes
+            }
         }
     }
+
+    public Room getRoomById(int roomId) {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.find(Room.class, roomId);
+        }
+    }
+
 
 }

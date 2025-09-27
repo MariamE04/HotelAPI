@@ -18,7 +18,7 @@ public interface IDAO {
 
     public Hotel addRoom(Hotel hotel, Room room);
 
-    public Hotel removeRoom(Hotel hotel, Room room);
+    public boolean removeRoom(int roomId);
 
-    public List<Room> getRoomsForHotel(Hotel hotel);
+    public List<Room> getRoomsForHotel(int hotelId);
 }
