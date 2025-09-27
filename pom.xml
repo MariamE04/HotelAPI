@@ -26,6 +26,7 @@
 
     </properties>
 
+
     <dependencies>
 
         <!--  DB    -->
@@ -147,7 +148,8 @@
             <version>5.5.0</version> <!-- Use the latest version available -->
             <scope>test</scope>
         </dependency>
-
     </dependencies>
+
+
 
 </project>
