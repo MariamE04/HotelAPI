@@ -21,7 +21,6 @@ public class Hotel {
 
     @OneToMany(mappedBy = "hotel",  fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)   // Room er owner
     @ToString.Exclude
-    //@JsonManagedReference //marker “parent-side”
     private List<Room> rooms;
 
 }
