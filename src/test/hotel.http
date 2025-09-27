@@ -39,7 +39,7 @@ DELETE http://localhost:7071/api/hotels/room/2
 
 ###
 
-### delete room by id
+### get room by id
 GET http://localhost:7071/api/hotels/room/2
 
 ###

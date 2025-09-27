@@ -31,15 +31,18 @@ public class RoomController{
     public void getRoomById(Context ctx) {
         int id = Integer.parseInt(ctx.pathParam("id"));
 
-        Room room = dao.getRoomById(id); // vi skal lave denne DAO-metode
+        Room room = dao.getRoomById(id); // henter Room entity
         if (room != null) {
-            ctx.json(room);
+            // Brug RoomMapper til at lave en DTO
+            RoomDTO roomDTO = RoomMapper.toDTO(room);
+            ctx.json(roomDTO);       // returner DTO i stedet for entity
             ctx.status(HttpStatus.OK);
         } else {
             ctx.result("Room not found");
             ctx.status(HttpStatus.NOT_FOUND);
         }
     }
+
 
     public void getRoomsForHotel(Context ctx) {
         int hotelId = Integer.parseInt(ctx.pathParam("hotelId"));
