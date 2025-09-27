@@ -16,11 +16,11 @@ import java.util.List;
 public class Hotel {
     @Id
     @GeneratedValue
-    private int id;
+    private Integer id;
     private String name;
     private String address;
 
-    @OneToMany(mappedBy = "hotel",  fetch = FetchType.EAGER)   // Room er owner
+    @OneToMany(mappedBy = "hotel",  fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)   // Room er owner
     @ToString.Exclude
     private List<Room> rooms;
 

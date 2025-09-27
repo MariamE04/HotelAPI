@@ -16,7 +16,6 @@ public class RoomMapper {
 
     public static Room toEntity(RoomDTO dto, Hotel hotel) {
         Room room = new Room();
-        room.setId(dto.getId());
         room.setNumber(dto.getNumber());
         room.setPrice(dto.getPrice());
         room.setHotel(hotel);

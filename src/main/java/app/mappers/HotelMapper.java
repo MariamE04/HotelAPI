@@ -20,7 +20,6 @@ public class HotelMapper {
 
         public static Hotel toEntity(HotelDTO dto) {
             Hotel hotel = new Hotel();
-            hotel.setId(dto.getId());
             hotel.setName(dto.getName());
             hotel.setAddress(dto.getAddress());
 

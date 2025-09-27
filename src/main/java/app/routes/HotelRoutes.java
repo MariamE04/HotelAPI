@@ -16,6 +16,7 @@ public class HotelRoutes {
             path("/{id}", () -> {
                 get(hotelController::getHotelById);
                 put(hotelController::updateHotel);
+                delete(hotelController::hotelToDelete);
             });
 
         };

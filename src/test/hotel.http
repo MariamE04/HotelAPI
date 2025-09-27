@@ -8,8 +8,8 @@ POST http://localhost:7071/api/hotels/hotel
 Content-Type: application/json
 
 [
-  {"id": 8, "name": "Hotel 4", "address": "Address 4"},
-  {"id": 9, "name": "Hotel 5", "address": "Address 5"}
+  {"id": 8, "name": "Hotel 8", "address": "Address 8"},
+  {"id": 9, "name": "Hotel 9", "address": "Address 9"}
 ]
 
 ###
@@ -23,3 +23,11 @@ GET http://localhost:7071/api/hotels/hotel
 GET http://localhost:7071/api/hotels/hotel/1
 
 ###
+
+### delete hotel by id
+DELETE http://localhost:7071/api/hotels/hotel/3
+
+###
+
+### delete hotel by id
+GET http://localhost:7071/api/hotels/hotel/3

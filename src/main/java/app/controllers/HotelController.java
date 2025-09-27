@@ -124,4 +124,20 @@ public class HotelController {
         }
     }
 
+    public void hotelToDelete(Context ctx){
+        int id = Integer.parseInt(ctx.pathParam("id"));
+        boolean delete = dao.deleteHotel(id);
+
+
+        if(delete){
+            ctx.result("Hotel with id " + id + " deleted");
+            ctx.status(HttpStatus.NO_CONTENT);
+        } else {
+            ctx.result("Hotel not found");
+            ctx.status(HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+
 }
