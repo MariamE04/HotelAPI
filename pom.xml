@@ -153,6 +153,15 @@
             <version>5.5.0</version> <!-- Use the latest version available -->
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>io.javalin.community.openapi</groupId>
+            <artifactId>javalin-openapi-plugin</artifactId>
+            <version>6.4.0-1</version>
+        </dependency>
+
+
+
     </dependencies>
 
 

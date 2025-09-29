@@ -3,6 +3,11 @@ package app.config;
 import io.javalin.Javalin;
 import io.javalin.config.JavalinConfig;
 import app.routes.Routes;
+
+import io.javalin.openapi.plugin.OpenApiPlugin;
+import io.javalin.openapi.plugin.OpenApiPluginConfiguration;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +16,7 @@ import java.util.Map;
 public class ApplicationConfig {
 
     // opretter en SLF4J logger (bruges til at logge requests/responses og exceptions).
-    private static final Logger logger = LoggerFactory.getLogger(ApplicationConfig.class);
+    private static final Logger logger = LoggerFactory.getLogger(ApplicationConfig.class); // “Opret en logger med navnet = klassens navn (app.config.ApplicationConfig)”.
 
     // indeholder route-definitioner (hvor endpoints som GET/POST registreres).
     private static Routes routes = new Routes();
@@ -25,6 +30,11 @@ public class ApplicationConfig {
 
         // sætter en base path for alle ruter; alle ruter vil få dette foranstillet
         config.router.contextPath = "/api/hotels";
+
+        // OpenAPI
+        config.registerPlugin(new OpenApiPlugin(openApiConfig -> {
+            openApiConfig.documentationPath = "/openapi"; // JSON-dokumentation
+        }));
 
         // Registrerer ruter i Javalin, bruger: "routes.getRoutes()" returnerer (typisk en lambda/consume: indeholder get(...), post(...) osv
         config.router.apiBuilder(routes.getRoutes());

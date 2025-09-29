@@ -1,0 +1,187 @@
+openapi: 3.0.3
+info:
+  title: Hotel API
+  version: 1.0.0
+  description: API til at håndtere hoteller og værelser.
+
+servers:
+  - url: http://localhost:7071/api/hotels
+
+paths:
+  /:
+    get:
+      summary: Test root endpoint
+      responses:
+        '200':
+          description: Returnerer en velkomstbesked.
+
+  /hotel:
+    get:
+      summary: Hent alle hoteller
+      responses:
+        '200':
+          description: Liste af hoteller
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Hotel'
+    post:
+      summary: Opret et eller flere hoteller
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/Hotel'
+                - type: array
+                  items:
+                    $ref: '#/components/schemas/Hotel'
+      responses:
+        '201':
+          description: Hotel(ler) oprettet
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Hotel'
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/Hotel'
+
+  /hotel/{id}:
+    get:
+      summary: Hent hotel ud fra ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Hotel fundet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hotel'
+        '404':
+          description: Hotel ikke fundet
+    put:
+      summary: Opdater et hotel
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Hotel'
+      responses:
+        '200':
+          description: Hotel opdateret
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hotel'
+        '404':
+          description: Hotel ikke fundet
+    delete:
+      summary: Slet hotel ud fra ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Hotel slettet
+        '404':
+          description: Hotel ikke fundet
+
+  /room/{id}:
+    get:
+      summary: Hent værelse ud fra ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Værelse fundet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '404':
+          description: Værelse ikke fundet
+    delete:
+      summary: Slet værelse ud fra ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Værelse slettet
+        '404':
+          description: Værelse ikke fundet
+
+  /room/{hotelId}/rooms:
+    get:
+      summary: Hent alle værelser for et givent hotel
+      parameters:
+        - in: path
+          name: hotelId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Liste af værelser for hotel
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Room'
+
+components:
+  schemas:
+    Hotel:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        address:
+          type: string
+        rooms:
+          type: array
+          items:
+            $ref: '#/components/schemas/Room'
+
+    Room:
+      type: object
+      properties:
+        id:
+          type: integer
+        hotelId:
+          type: integer
+        number:
+          type: integer
+        price:
+          type: number
+          format: double
