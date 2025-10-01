@@ -26,7 +26,8 @@ public class RoomControllerTest {
         emf = HibernateConfig.getEntityManagerFactoryForTest();
 
         // Start javalin server
-        app = ApplicationConfig.startServer(7071);
+        ApplicationConfig.getInstance().startServer(7071);
+        app = ApplicationConfig.getInstance().getApp();
 
         // Konfigurer RestAssured base URI
         RestAssured.baseURI = "http://localhost";
@@ -38,7 +39,7 @@ public class RoomControllerTest {
     @AfterAll
     void tearDown() {
         // Stop server
-        ApplicationConfig.stopServer(app);
+        ApplicationConfig.getInstance().stopServer();
 
         // Luk emf
         if(emf != null){

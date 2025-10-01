@@ -7,6 +7,7 @@ import io.javalin.http.Context;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HotelDAO implements IDAO{

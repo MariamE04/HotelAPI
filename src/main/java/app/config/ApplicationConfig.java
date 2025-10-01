@@ -21,6 +21,18 @@ public class ApplicationConfig {
     // indeholder route-definitioner (hvor endpoints som GET/POST registreres).
     private static Routes routes = new Routes();
 
+    private static ApplicationConfig instance;
+    private Javalin app;
+
+    private ApplicationConfig() {}
+
+    public static ApplicationConfig getInstance() {
+        if (instance == null) {
+            instance = new ApplicationConfig();
+        }
+        return instance;
+    }
+
     public static void configuration(JavalinConfig config) {
         //slår den tekstuelle Javalin-banner ved opstart fra (renser konsollen).
         config.showJavalinBanner = false;
@@ -31,6 +43,8 @@ public class ApplicationConfig {
         // sætter en base path for alle ruter; alle ruter vil få dette foranstillet
         config.router.contextPath = "/api/hotels";
 
+        config.http.defaultContentType = "application/json";
+
         // OpenAPI
         config.registerPlugin(new OpenApiPlugin(openApiConfig -> {
             openApiConfig.documentationPath = "/openapi"; // JSON-dokumentation
@@ -40,27 +54,47 @@ public class ApplicationConfig {
         config.router.apiBuilder(routes.getRoutes());
     }
 
-    public static Javalin startServer(int port) {
+    public Javalin startServer(int port) {
+
+        if (this.app != null) {
+            logger.warn("Server is already running on port {}", this.app.port());
+            return this.app;
+        }
+
         // Det svarer til: Javalin.create(config -> configuration(config)). Dvs. Javalin oprettes med den ovenstående konfiguration.
-        var app = Javalin.create(ApplicationConfig::configuration);
+        this.app = Javalin.create(ApplicationConfig::configuration);
 
         // log requests
-        app.before(ctx -> { // en before-handler som kører før hver request-handler.
+        this.app.before(ctx -> { // en before-handler som kører før hver request-handler.
             logger.info("REQUEST | Method: {} | Path: {} | Body: {}",
                     ctx.method(), ctx.path(), ctx.body());
             // ctx.body() er request-body som string (kan være tom eller stor).
         });
 
         // log responses
-        app.after(ctx -> { // after-handler: kører efter request-handler. Logger status, path og ctx.result() (response body). Koden sikrer at hvis ctx.result() er null så logges "empty".
+        this.app.after(ctx -> { // after-handler: kører efter request-handler. Logger status, path og ctx.result() (response body). Koden sikrer at hvis ctx.result() er null så logges "empty".
             String result = ctx.result(); // er hvad min handler satte som response
             logger.info("RESPONSE | Status: {} | Path: {} | Result: {}",
                     ctx.status(), ctx.path(), result != null ? result : "empty");
         });
 
+        // CORS
+        this.app.before(ctx -> {
+            ctx.header("Access-Control-Allow-Origin", "*");
+            ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+            ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+            ctx.header("Access-Control-Allow-Credentials", "true");
+        });
+        this.app.options("/*", ctx -> {
+            ctx.header("Access-Control-Allow-Origin", "*");
+            ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+            ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+            ctx.header("Access-Control-Allow-Credentials", "true");
+        });
+
         // exception handling
         // logger IllegalStateException fejlen (inkl. stacktrace pga. , e) og sender HTTP 400 samt en JSON-body
-        app.exception(IllegalStateException.class, (e, ctx) -> {
+        this.app.exception(IllegalStateException.class, (e, ctx) -> {
             logger.error("IllegalStateException | Path: {} | Message: {}", ctx.path(), e.getMessage(), e);
             ctx.status(400)
                     .json(Map.of(
@@ -70,7 +104,7 @@ public class ApplicationConfig {
         });
 
         // En generel fallback-exception handler: logger og returnerer 500 + JSON med error og message
-        app.exception(Exception.class, (e, ctx) -> {
+        this.app.exception(Exception.class, (e, ctx) -> {
             logger.error("Exception | Path: {} | Message: {}", ctx.path(), e.getMessage(), e);
             ctx.status(500)
                     .json(Map.of(
@@ -79,12 +113,19 @@ public class ApplicationConfig {
                     ));
         });
 
-        app.start(port); // starter Javalin på den givne port (binder socket og starter worker-tråde).
+        this.app.start(port); // starter Javalin på den givne port (binder socket og starter worker-tråde).
         return app; // returnerer Javalin-instansen (praktisk til tests, så man kan stoppe serveren bagefter eller foretage integrationstests).
     }
 
-    public static void stopServer(Javalin app) {
-        app.stop(); // stopper serveren.
-        logger.info("Server stopped"); // log besked.
+    public Javalin getApp() {
+        return app;
+    }
+
+
+    public void stopServer() {
+        if (this.app != null) {
+            this.app.stop();
+            logger.info("Server stopped");
+        }
     }
 }

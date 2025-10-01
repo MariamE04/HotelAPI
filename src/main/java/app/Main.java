@@ -17,7 +17,9 @@ public class Main {
         EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
         System.out.println("test");
 
-        ApplicationConfig.startServer(7071);
+       // ApplicationConfig.startServer(7071);
+
+        ApplicationConfig.getInstance().startServer(7071);
 
         HotelDAO hotelDAO = new HotelDAO(emf);
 
