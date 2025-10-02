@@ -1,5 +1,7 @@
 package app.config;
 
+import app.Security.rest.ISecurityController;
+import app.Security.rest.SecurityController;
 import io.javalin.Javalin;
 import io.javalin.config.JavalinConfig;
 import app.routes.Routes;
@@ -18,8 +20,11 @@ public class ApplicationConfig {
     // opretter en SLF4J logger (bruges til at logge requests/responses og exceptions).
     private static final Logger logger = LoggerFactory.getLogger(ApplicationConfig.class); // “Opret en logger med navnet = klassens navn (app.config.ApplicationConfig)”.
 
+    private static ISecurityController securityController = new SecurityController();
+
     // indeholder route-definitioner (hvor endpoints som GET/POST registreres).
     private static Routes routes = new Routes();
+    private static ApplicationConfig appConfig;
 
     private static ApplicationConfig instance;
     private Javalin app;
@@ -27,10 +32,17 @@ public class ApplicationConfig {
     private ApplicationConfig() {}
 
     public static ApplicationConfig getInstance() {
-        if (instance == null) {
-            instance = new ApplicationConfig();
+        if (appConfig == null) {
+            appConfig = new ApplicationConfig();
         }
-        return instance;
+        return appConfig;
+    }
+
+    // Adding below methods to ApplicationConfig, means that EVERY ROUTE will be checked for security roles. So open routes must have a role of ANYONE
+    public ApplicationConfig checkSecurityRoles() {
+        app.beforeMatched(securityController.authenticate()); // check if there is a valid token in the header
+        app.beforeMatched(securityController.authorize()); // check if the user has the required role
+        return appConfig;
     }
 
     public static void configuration(JavalinConfig config) {
@@ -44,6 +56,7 @@ public class ApplicationConfig {
         config.router.contextPath = "/api/hotels";
 
         config.http.defaultContentType = "application/json";
+
 
         // OpenAPI
         config.registerPlugin(new OpenApiPlugin(openApiConfig -> {
@@ -92,6 +105,7 @@ public class ApplicationConfig {
             ctx.header("Access-Control-Allow-Credentials", "true");
         });
 
+
         // exception handling
         // logger IllegalStateException fejlen (inkl. stacktrace pga. , e) og sender HTTP 400 samt en JSON-body
         this.app.exception(IllegalStateException.class, (e, ctx) -> {
@@ -116,6 +130,7 @@ public class ApplicationConfig {
         this.app.start(port); // starter Javalin på den givne port (binder socket og starter worker-tråde).
         return app; // returnerer Javalin-instansen (praktisk til tests, så man kan stoppe serveren bagefter eller foretage integrationstests).
     }
+
 
     public Javalin getApp() {
         return app;

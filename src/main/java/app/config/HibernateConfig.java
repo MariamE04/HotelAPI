@@ -1,5 +1,7 @@
 package app.config;
 
+import app.Security.entities.Role;
+import app.Security.entities.User;
 import app.entities.Hotel;
 import app.entities.Room;
 import app.utils.Utils;
@@ -38,10 +40,16 @@ public class HibernateConfig {
         return emfTest;
     }
 
+    private static String getDBName() {
+        return Utils.getPropertyValue("db.name", "from-pom.properties");
+    }
+
     // TODO: IMPORTANT: Add Entity classes here for them to be registered with Hibernate
     private static void getAnnotationConfiguration(Configuration configuration) {
          configuration.addAnnotatedClass(Hotel.class);
          configuration.addAnnotatedClass(Room.class);
+         configuration.addAnnotatedClass(User.class);
+         configuration.addAnnotatedClass(Role.class);
     }
 
     private static EntityManagerFactory createEMF(boolean forTest) {
@@ -91,13 +99,10 @@ public class HibernateConfig {
         return props;
     }
 
-    private static Properties setDevProperties(Properties props) {
-        String DBName = Utils.getPropertyValue("DB_NAME", "config.properties");
-        String DB_USERNAME = Utils.getPropertyValue("DB_USERNAME", "config.properties");
-        String DB_PASSWORD = Utils.getPropertyValue("DB_PASSWORD", "config.properties");
-        props.put("hibernate.connection.url", "jdbc:postgresql://localhost:5432/" + DBName);
-        props.put("hibernate.connection.username", DB_USERNAME);
-        props.put("hibernate.connection.password", DB_PASSWORD);
+    private static Properties setDevProperties(Properties props){
+        props.put("hibernate.connection.url", "jdbc:postgresql://localhost:5432/"+ getDBName());
+        props.put("hibernate.connection.username", "postgres");
+        props.put("hibernate.connection.password", "postgres");
         return props;
     }
 

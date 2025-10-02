@@ -1,10 +1,13 @@
 package app;
 
 import app.DAO.HotelDAO;
+import app.Security.SecurityDAO;
+import app.Security.rest.ISecurityDAO;
 import app.config.ApplicationConfig;
 import app.config.HibernateConfig;
 import app.dtos.HotelDTO;
 import app.entities.Hotel;
+import app.exceptions.EntityNotFoundException;
 import app.mappers.HotelMapper;
 import app.utils.Populater;
 import jakarta.persistence.EntityManagerFactory;
@@ -13,13 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws EntityNotFoundException {
         EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
+        ISecurityDAO dao= new SecurityDAO(HibernateConfig.getEntityManagerFactory());
         System.out.println("test");
 
-       // ApplicationConfig.startServer(7071);
+        ApplicationConfig config = ApplicationConfig.getInstance();
+        config.startServer(7071);       // opret Javalin først
+        config.checkSecurityRoles();    // så kan vi tilføje beforeMatched handlers
 
-        ApplicationConfig.getInstance().startServer(7071);
 
         HotelDAO hotelDAO = new HotelDAO(emf);
 
@@ -31,6 +36,10 @@ public class Main {
             Hotel hotel = HotelMapper.toEntity(dto);
             hotelDAO.createHotel(hotel);
         }
+
+        dao.createUser("user2", "pass124");
+        dao.createRole("USER");
+        dao.addUserRole("user2", "USER");
 
     }
 

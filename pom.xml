@@ -24,6 +24,17 @@
         <org.slf4j>2.0.16</org.slf4j>
         <hamcrest>3.0</hamcrest>
 
+        <token.security.version>1.0.2</token.security.version>
+        <jbcrypt.version>0.4</jbcrypt.version>
+        <token.security.version>1.0.2</token.security.version>
+        <jbcrypt.version>0.4</jbcrypt.version>
+
+        <token.security.version>1.0.2</token.security.version>
+
+        <!-- DATABASE PROJECT NAME ON SERVER  -->
+        <db.name>hotel</db.name>
+        <javalin.port>7071</javalin.port>
+
     </properties>
 
 
@@ -161,9 +172,28 @@
         </dependency>
 
 
+        <!--- hashning -->
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>${jbcrypt.version}</version>
+        </dependency>
+
+        <!--- token -->
+
+        <dependency>
+            <groupId>com.github.Hartmannsolution</groupId>
+            <artifactId>TokenSecurity</artifactId>
+            <version>${token.security.version}</version>
+        </dependency>
 
     </dependencies>
 
-
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 
 </project>

@@ -46,3 +46,20 @@ GET http://localhost:7071/api/hotels/room/2
 
 ### get all rooms for hotel
 GET  http://localhost:7071/api/hotels/room/1/rooms
+
+###
+
+### Security
+POST http://localhost:7071/api/hotels/auth/login
+Content-Type: application/json
+
+{
+    "username": "user2",
+    "password": "pass124"
+}
+
+
+###
+
+GET http://{{url}}/api/hotels/protected/user_demo
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJcIk1hcmlhbSBFbG1pclwiIiwic3ViIjoidXNlcjIiLCJleHAiOjE3NTk0MzE2MDcsInJvbGVzIjoiVXNlciIsInVzZXJuYW1lIjoidXNlcjIifQ.ACYeyUA1HARjVYcrsWBPB6Sape1ZH1D7837pZwevxoY
