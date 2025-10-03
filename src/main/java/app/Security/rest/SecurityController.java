@@ -50,7 +50,52 @@ public class SecurityController implements ISecurityController {
 
     @Override
     public Handler register() {
-        return null;
+        return (Context ctx) -> {
+            try {
+                // Læs bruger fra request-body
+                User reqUser = ctx.bodyAsClass(User.class);
+
+                // Simpel validering
+                if (reqUser.getUsername() == null || reqUser.getUsername().isBlank()
+                        || reqUser.getPassword() == null || reqUser.getPassword().isBlank()) {
+                    throw new ValidationException("Username and password must be provided");
+                }
+
+                // Opret bruger (User konstruktøren hasher password)
+                User createdUser = securityDAO.createUser(reqUser.getUsername(), reqUser.getPassword());
+
+                // Sørg for at standard-rollen "User" eksisterer. Hvis createRole fejler pga. duplikat, ignorerer vi det.
+                try {
+                    securityDAO.createRole("User");
+                } catch (Exception ignored) {
+                    // Rolles kan allerede eksistere -> ignorer
+                }
+
+                // Tilføj rollen "User" til den nye bruger
+                createdUser = securityDAO.addUserRole(createdUser.getUsername(), "User");
+
+                // Lav DTO + token
+                Set<String> stringRoles = createdUser.getRoles()
+                        .stream()
+                        .map(role -> role.getRolename())
+                        .collect(Collectors.toSet());
+
+                UserDTO userDTO = new UserDTO(createdUser.getUsername(), stringRoles);
+                String token = createToken(userDTO);
+
+                ObjectNode on = objectMapper.createObjectNode()
+                        .put("token", token)
+                        .put("username", createdUser.getUsername());
+
+                ctx.json(on).status(201);
+
+            } catch (ValidationException ve) {
+                ctx.status(400).json(objectMapper.createObjectNode().put("msg", ve.getMessage()));
+            } catch (Exception e) {
+                // Hvis f.eks. brugernavn allerede findes, vil persist kaste en fejl -> returner 400 med besked
+                ctx.status(400).json(objectMapper.createObjectNode().put("msg", "Registration failed: " + e.getMessage()));
+            }
+        };
     }
 
     @Override

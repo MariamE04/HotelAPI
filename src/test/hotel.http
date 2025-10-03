@@ -49,6 +49,8 @@ GET  http://localhost:7071/api/hotels/room/1/rooms
 
 ###
 
+
+
 ### Security
 POST http://localhost:7071/api/hotels/auth/login
 Content-Type: application/json
@@ -62,4 +64,36 @@ Content-Type: application/json
 ###
 
 GET http://{{url}}/api/hotels/protected/user_demo
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJcIk1hcmlhbSBFbG1pclwiIiwic3ViIjoidXNlcjIiLCJleHAiOjE3NTk0MzE2MDcsInJvbGVzIjoiVXNlciIsInVzZXJuYW1lIjoidXNlcjIifQ.ACYeyUA1HARjVYcrsWBPB6Sape1ZH1D7837pZwevxoY
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJcIk1hcmlhbSBFbG1pclwiIiwic3ViIjoidXNlcjIiLCJleHAiOjE3NTk0OTExNTMsInJvbGVzIjoiVVNFUiIsInVzZXJuYW1lIjoidXNlcjIifQ.IcvmtjxcDDpXEWMXgQ49IoS61_OrFKug-JDCKmrMV4c
+
+
+###
+
+### registere
+POST http://{{url}}/api/hotels/auth/register
+Content-Type: application/json
+
+{
+  "username": "mariam",
+  "password": "hemmeligt"
+}
+
+###
+
+
+### logger ind med den registeret bruger
+POST http://localhost:7071/api/hotels/auth/login
+Content-Type: application/json
+
+{
+  "username": "mariam",
+  "password": "hemmeligt"
+}
+
+
+###
+
+### tjekker om det valid
+GET http://{{url}}/api/hotels/protected/user_demo
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJcIk1hcmlhbSBFbG1pclwiIiwic3ViIjoibWFyaWFtIiwiZXhwIjoxNzU5NDkxMTkwLCJyb2xlcyI6IlVzZXIiLCJ1c2VybmFtZSI6Im1hcmlhbSJ9.4_i3QzZFkF32yOHKa54vJ8-zjX1rSL5GWlW7qf1frj4
+

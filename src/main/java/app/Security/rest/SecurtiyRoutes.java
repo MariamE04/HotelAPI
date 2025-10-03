@@ -15,6 +15,7 @@ public class SecurtiyRoutes {
     public EndpointGroup getOpenRoutes() {
         return () -> {
             post("/login", securityController.login());
+            post("/register", securityController.register());
 
         };
     }
