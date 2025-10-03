@@ -97,3 +97,21 @@ Content-Type: application/json
 GET http://{{url}}/api/hotels/protected/user_demo
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJcIk1hcmlhbSBFbG1pclwiIiwic3ViIjoibWFyaWFtIiwiZXhwIjoxNzU5NDkxMTkwLCJyb2xlcyI6IlVzZXIiLCJ1c2VybmFtZSI6Im1hcmlhbSJ9.4_i3QzZFkF32yOHKa54vJ8-zjX1rSL5GWlW7qf1frj4
 
+
+###
+
+POST http://localhost:7071/api/hotels/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin"
+}
+
+###
+
+### tjekker om det valid
+GET http://{{url}}/api/hotels/protected/admin_demo
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJcIk1hcmlhbSBFbG1pclwiIiwic3ViIjoiYWRtaW4iLCJleHAiOjE3NTk0OTM2NjUsInJvbGVzIjoiQURNSU4iLCJ1c2VybmFtZSI6ImFkbWluIn0.zmkyFFu-ht5NLzBEHopMi1_PwsKeDmh1xxIb2zC9A0s
+
+###

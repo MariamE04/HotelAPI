@@ -41,6 +41,10 @@ public class Main {
         dao.createRole("USER");
         dao.addUserRole("user2", "USER");
 
+        dao.createUser("admin", "admin");
+        dao.createRole("ADMIN");
+        dao.addUserRole("admin", "ADMIN");
+
     }
 
 }
